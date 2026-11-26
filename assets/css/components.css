@@ -423,3 +423,95 @@
     justify-items: start;
     gap: var(--space-4);
 }
+
+/* GenrePill (case à cocher stylée en pastille) ------------------------------ */
+.genre-picker {
+    min-width: 0;
+    padding: 0;
+    border: 0;
+}
+
+.genre-picker__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+}
+
+.genre-pill {
+    position: relative;
+    cursor: pointer;
+}
+
+/* La vraie case reste accessible au clavier et aux lecteurs d'écran */
+.genre-pill__input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.genre-pill__label {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    min-height: var(--touch-target);
+    padding: 0 var(--space-4);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-full);
+    color: var(--text-primary);
+    transition: background-color var(--transition), border-color var(--transition);
+}
+
+.genre-pill__label .icon {
+    display: none;
+}
+
+.genre-pill:hover .genre-pill__label {
+    border-color: var(--accent);
+}
+
+.genre-pill__input:checked + .genre-pill__label {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: var(--primary-text);
+    font-weight: var(--fw-semibold);
+}
+
+.genre-pill__input:checked + .genre-pill__label .icon {
+    display: block;
+}
+
+.genre-pill__input:focus-visible + .genre-pill__label {
+    outline: var(--focus-ring);
+    outline-offset: var(--focus-offset);
+}
+
+.genre-counter {
+    color: var(--text-secondary);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+}
+
+.genre-counter.is-active {
+    color: var(--primary);
+}
+
+/* Onboarding ---------------------------------------------------------------- */
+.onboarding {
+    display: grid;
+    gap: var(--space-5);
+    max-width: 560px;
+    margin: 0 auto;
+}
+
+.onboarding__intro {
+    display: grid;
+    gap: var(--space-2);
+}
+
+.onboarding__logout {
+    justify-self: center;
+}

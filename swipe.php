@@ -2,8 +2,14 @@
 declare(strict_types=1);
 
 // Page provisoire (T1) : protégée et reliée à la navigation. Contenu livré dans un ticket suivant.
+require __DIR__ . '/includes/db.php';
 require __DIR__ . '/includes/auth.php';
-require_login();
+$userId = require_login();
+
+// Sans genre préféré, l'utilisateur passe d'abord par l'onboarding (US-03)
+if (user_home($pdo, $userId) === 'onboarding.php') {
+    redirect('onboarding.php');
+}
 
 $pageTitle = 'Découvrir';
 $activeNav = 'swipe';

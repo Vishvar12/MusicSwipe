@@ -76,6 +76,11 @@ h3,
 }
 
 /* Accessibilité ------------------------------------------------------------- */
+/* L'attribut hidden doit toujours masquer, même si un composant définit display */
+[hidden] {
+    display: none !important;
+}
+
 :focus-visible {
     outline: var(--focus-ring);
     outline-offset: var(--focus-offset);

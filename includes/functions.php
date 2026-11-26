@@ -10,6 +10,16 @@ function e(?string $value): string
 }
 
 /**
+ * URL d'un fichier statique avec sa date de modification (?v=...) :
+ * le navigateur recharge le fichier dès qu'il change au lieu d'utiliser une version en cache.
+ */
+function asset(string $path): string
+{
+    $file = __DIR__ . '/../' . $path;
+    return $path . (is_file($file) ? '?v=' . filemtime($file) : '');
+}
+
+/**
  * Redirige vers une page interne puis arrête le script.
  */
 function redirect(string $path): never

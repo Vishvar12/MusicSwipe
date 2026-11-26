@@ -23,9 +23,9 @@ $activeNav = $activeNav ?? null;
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap">
-    <link rel="stylesheet" href="assets/css/tokens.css">
-    <link rel="stylesheet" href="assets/css/base.css">
-    <link rel="stylesheet" href="assets/css/components.css">
+    <link rel="stylesheet" href="<?= e(asset('assets/css/tokens.css')) ?>">
+    <link rel="stylesheet" href="<?= e(asset('assets/css/base.css')) ?>">
+    <link rel="stylesheet" href="<?= e(asset('assets/css/components.css')) ?>">
 </head>
 <body class="<?= $activeNav !== null ? 'has-nav' : '' ?>">
     <a class="skip-link" href="#contenu">Aller au contenu</a>
