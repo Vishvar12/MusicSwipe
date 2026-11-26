@@ -1088,3 +1088,133 @@
     grid-template-columns: 1fr 1fr;
     gap: var(--space-3);
 }
+
+/* Recherche, filtre et tri (US-06) ------------------------------------------ */
+.likes-filters {
+    display: grid;
+    gap: var(--space-3);
+}
+
+.likes-filters__search {
+    position: relative;
+}
+
+.likes-filters__icon {
+    position: absolute;
+    top: 50%;
+    left: var(--space-4);
+    color: var(--text-secondary);
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+.likes-filters__search .field__input {
+    padding-left: calc(var(--space-4) + 28px);
+}
+
+.likes-filters__search .field__input:focus-visible {
+    padding-left: calc(var(--space-4) + 27px);
+}
+
+.likes-filters__row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3);
+}
+
+.likes-filters__row .btn {
+    grid-column: 1 / -1;
+}
+
+select.field__input {
+    color-scheme: dark; /* liste déroulante native en thème sombre */
+    cursor: pointer;
+}
+
+.likes-filters__reset {
+    justify-self: start;
+    font-weight: var(--fw-semibold);
+}
+
+@media (min-width: 768px) {
+    .likes-filters {
+        grid-template-columns: 1fr auto;
+        align-items: center;
+    }
+
+    .likes-filters__row {
+        grid-template-columns: 180px 160px auto;
+    }
+
+    .likes-filters__row .btn {
+        grid-column: auto;
+    }
+
+    .likes-filters__reset {
+        grid-column: 1 / -1;
+    }
+}
+
+/* Squelettes de lignes (état chargement de Mes likes) ----------------------- */
+.track-row--skeleton {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+.track-row__skeleton-lines {
+    display: grid;
+    flex: 1;
+    gap: var(--space-2);
+}
+
+.skeleton--thumb {
+    width: 56px;
+    height: 56px;
+    flex-shrink: 0;
+}
+
+.skeleton--line {
+    width: 70%;
+    height: 16px;
+}
+
+.skeleton--line-short {
+    width: 45%;
+    height: 14px;
+}
+
+/* Pagination ---------------------------------------------------------------- */
+.pagination {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-2);
+}
+
+.pagination__link {
+    display: grid;
+    place-items: center;
+    min-width: var(--touch-target);
+    height: var(--touch-target);
+    padding: 0 var(--space-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+    font-weight: var(--fw-semibold);
+    text-decoration: none;
+}
+
+.pagination__link:hover {
+    border-color: var(--accent);
+}
+
+.pagination__link.is-current {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: var(--primary-text);
+}
+
+.pagination__link.is-disabled {
+    opacity: 0.4;
+}

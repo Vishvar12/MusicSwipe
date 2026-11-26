@@ -25,7 +25,7 @@ try {
     }
     json_response(['ok' => true, 'data' => [
         'track_id' => $trackId,
-        'count'    => count(get_user_likes($pdo, $userId)),
+        'count'    => count_user_likes($pdo, $userId),
     ]]);
 } catch (PDOException $e) {
     error_log('MusicSwipe delete_like : ' . $e->getMessage());

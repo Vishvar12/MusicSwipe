@@ -190,15 +190,31 @@
     const deleteError = dialog.querySelector('[data-delete-error]');
     const confirmButton = dialog.querySelector('[data-delete-confirm]');
 
+    const summary = $('[data-likes-summary]');
+
     const updateCount = (count) => {
         if (countBadge) {
             countBadge.textContent = count + (count > 1 ? ' morceaux' : ' morceau');
             countBadge.hidden = count === 0;
         }
         if (count === 0) {
+            // Plus aucun like : état vide, sans formulaire de recherche ni pagination
+            root.querySelectorAll('[data-hide-when-empty]').forEach((el) => { el.hidden = true; });
             list.hidden = true;
             empty.hidden = false;
+            return true;
         }
+        if (list.querySelectorAll('[data-track-row]').length === 0) {
+            // Page vidée mais il reste des morceaux ailleurs : le serveur recalcule la page à afficher
+            window.location.reload();
+            return false;
+        }
+        if (summary) {
+            const total = Number(summary.dataset.total) - 1;
+            summary.dataset.total = String(total);
+            summary.textContent = `${total} ${total > 1 ? 'résultats' : 'résultat'} · page ${summary.dataset.page} sur ${summary.dataset.pages}`;
+        }
+        return true;
     };
 
     const askDelete = (row) => {
@@ -225,9 +241,10 @@
             row.remove();
             pendingRow = null;
             dialog.close();
-            updateCount(data.count);
-            showToast('Morceau retiré de Mes likes');
-            (nextFocus ?? heading).focus();
+            if (updateCount(data.count)) {
+                showToast('Morceau retiré de Mes likes');
+                (nextFocus ?? heading).focus();
+            }
         } catch (err) {
             showError(deleteError, err.message || "Le morceau n'a pas pu être retiré. Vérifie ta connexion.");
         } finally {
@@ -242,6 +259,50 @@
         if (pendingRow) {
             pendingRow.querySelector('[data-delete]').focus();
             pendingRow = null;
+        }
+    });
+
+    // --- Recherche, filtre, tri, pagination (US-06) --------------------------
+    const filtersForm = $('[data-likes-filters]');
+    const skeleton = $('[data-likes-skeleton]');
+
+    // État chargement pendant que le serveur prépare la nouvelle page
+    const showLoading = () => {
+        stopAudio();
+        if (list && skeleton) {
+            list.hidden = true;
+            skeleton.hidden = false;
+        }
+        root.setAttribute('aria-busy', 'true');
+    };
+
+    if (filtersForm) {
+        // Un changement de genre ou de tri relance la recherche (le bouton reste utile sans JavaScript)
+        filtersForm.querySelectorAll('[data-autosubmit]').forEach((select) => {
+            select.addEventListener('change', () => filtersForm.requestSubmit());
+        });
+        filtersForm.addEventListener('submit', () => {
+            // URL plus lisible : on n'envoie pas les champs vides (q= et genre=)
+            filtersForm.querySelectorAll('input[name="q"], select[name="genre"]').forEach((field) => {
+                field.disabled = field.value.trim() === '';
+            });
+            showLoading();
+        });
+    }
+
+    $('[data-likes-pagination]')?.addEventListener('click', (event) => {
+        if (event.target.closest('a[href]')) {
+            showLoading();
+        }
+    });
+
+    // Retour arrière depuis le cache du navigateur : on réaffiche la liste et les champs
+    window.addEventListener('pageshow', (event) => {
+        if (event.persisted) {
+            root.removeAttribute('aria-busy');
+            skeleton && (skeleton.hidden = true);
+            list && (list.hidden = list.querySelectorAll('[data-track-row]').length === 0);
+            filtersForm?.querySelectorAll('[disabled]').forEach((field) => { field.disabled = false; });
         }
     });
 
