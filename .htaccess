@@ -1,0 +1,21 @@
+# MusicSwipe — règles Apache (MAMP en local, hébergeur en production)
+
+# Pas de liste automatique du contenu d'un dossier
+Options -Indexes
+
+# Dossiers internes : jamais servis directement (code inclus, migrations, documentation, dépôt Git)
+RedirectMatch 403 (^|/)(includes|migrations|docs|\.git)(/|$)
+
+# Fichiers sensibles ou internes : schéma SQL, documentation, configuration, fichiers système
+<FilesMatch "\.(sql|md|pdf|log|bak|ini)$">
+    Require all denied
+</FilesMatch>
+<FilesMatch "^(config\..*\.php|\.gitignore|\.htaccess|\.DS_Store)$">
+    Require all denied
+</FilesMatch>
+
+# Ne pas révéler la version de PHP (doublé côté PHP dans includes/security.php)
+<IfModule mod_headers.c>
+    Header unset X-Powered-By
+    Header always unset X-Powered-By
+</IfModule>
