@@ -55,7 +55,11 @@ function filter_valid_genre_ids(PDO $pdo, mixed $submitted): array
  */
 function save_user_genres(PDO $pdo, int $userId, array $genreIds): void
 {
-    $pdo->beginTransaction();
+    // Si l'appelant a déjà ouvert une transaction (profil : pseudo + genres), on s'y intègre
+    $ownTransaction = !$pdo->inTransaction();
+    if ($ownTransaction) {
+        $pdo->beginTransaction();
+    }
     try {
         $stmt = $pdo->prepare('DELETE FROM user_genres WHERE user_id = :uid');
         $stmt->execute(['uid' => $userId]);
@@ -64,9 +68,13 @@ function save_user_genres(PDO $pdo, int $userId, array $genreIds): void
         foreach ($genreIds as $genreId) {
             $stmt->execute(['uid' => $userId, 'gid' => $genreId]);
         }
-        $pdo->commit();
+        if ($ownTransaction) {
+            $pdo->commit();
+        }
     } catch (PDOException $e) {
-        $pdo->rollBack();
+        if ($ownTransaction) {
+            $pdo->rollBack();
+        }
         throw $e;
     }
 }

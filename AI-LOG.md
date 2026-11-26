@@ -111,3 +111,13 @@
 - **Corrigé pendant les tests :** l'option « Tous les genres » était coupée à 390 px → « Genre : tous ».
 - **Limite connue (cosmétique) :** après avoir vidé une page par suppressions, la page se recharge sur la dernière page valide mais l'URL garde l'ancien `page=`.
 - **Décision :** à relire (`git diff`) puis committer.
+
+## 2026-11-26 — Ticket T6 — Dashboard et modification du profil (US-09, US-10)
+- **Outil :** Claude Code (plan T6 validé, puis exécution)
+- **Branche :** `feature/dashboard-profile`
+- **Prompt / Objectif :** Tableau de bord avec compteurs réels (swipes, likes, dislikes, taux de like, genre le plus liké, genres préférés) et modification du pseudo et des genres (Update sur `users` et `user_genres`).
+- **Décision de conception :** likes = morceaux actuellement dans « Mes likes » (règle de `PROJECT.md`) ; taux de like = swipes « like » ÷ swipes, calculé sur l'historique pour ne pas changer quand on retire un morceau ; « — » sans swipe. Règle ajoutée dans `PROJECT.md` §6.
+- **Résultat :** `includes/stats.php` (`get_user_stats()`, requêtes filtrées par l'utilisateur) ; `profil.php` (dashboard + formulaire, validation serveur, transaction pseudo + genres, Post/Redirect/Get avec message de succès unique, états rempli / vide / erreur / chargement / succès) ; `includes/genre_picker.php` (pastilles sorties de `onboarding.php` et partagées) ; `save_user_genres()` peut s'intégrer à une transaction déjà ouverte ; styles StatCard, avatar, profil.
+- **Vérification :** nouveau compte → compteurs 0, taux « — », « Commencer à swiper » ; 3 likes + 2 dislikes → 5 / 3 / 2 / 60 %, identiques aux `COUNT(*)` SQL ; après retrait d'un like → likes 2, taux toujours 60 % ; genre le plus liké exact ; compte B à 0 ; B qui envoie `user_id` = A → seul B est modifié ; modification pseudo + 2 genres → `users` et `user_genres` à jour, message affiché une seule fois (rien au rechargement) ; pseudo vide, 1 caractère, 31 caractères, espaces seuls, aucun genre, genre 999 → refusés avec message par champ et rien d'enregistré ; sans CSRF → 403 ; pseudo `<script>` affiché échappé ; onboarding inchangé après le déplacement des pastilles ; navigateur : blocage à l'écran sans genre, rendu 390 / 1440 px conforme aux maquettes `06-*`. Comptes de test supprimés.
+- **Écart au plan :** la barre de navigation n'affiche pas le pseudo (elle ne l'a jamais affiché) ; le nouveau pseudo apparaît dans le titre et l'avatar du profil.
+- **Décision :** à relire (`git diff`) puis committer.

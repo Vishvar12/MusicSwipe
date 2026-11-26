@@ -1218,3 +1218,116 @@ select.field__input {
 .pagination__link.is-disabled {
     opacity: 0.4;
 }
+
+/* Page Profil / Dashboard --------------------------------------------------- */
+.profile {
+    display: grid;
+    gap: var(--space-5);
+    max-width: 760px;
+    margin: 0 auto;
+}
+
+.profile__header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+}
+
+.profile__avatar {
+    display: grid;
+    place-items: center;
+    width: 56px;
+    height: 56px;
+    flex-shrink: 0;
+    border-radius: var(--radius-full);
+    background: var(--primary);
+    color: var(--primary-text);
+    font-size: var(--fs-xl);
+    font-weight: var(--fw-semibold);
+}
+
+.profile__section {
+    display: grid;
+    gap: var(--space-4);
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--border-subtle);
+}
+
+.profile__section:first-of-type {
+    padding-top: 0;
+    border-top: 0;
+}
+
+/* StatCard ------------------------------------------------------------------ */
+.stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-4);
+}
+
+@media (min-width: 768px) {
+    .stats {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+.stat-card {
+    display: flex;
+    flex-direction: column-reverse; /* la valeur s'affiche au-dessus de son libellé (dt avant dd dans le HTML) */
+    gap: var(--space-1);
+    padding: var(--space-4);
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+}
+
+.stat-card__value {
+    margin: 0;
+    color: var(--primary);
+    font-size: var(--fs-2xl);
+    font-weight: var(--fw-bold);
+    line-height: var(--lh-tight);
+}
+
+.stat-card__label {
+    color: var(--text-secondary);
+    font-size: var(--fs-sm);
+}
+
+.profile__empty {
+    display: grid;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    border: 1px dashed var(--border);
+    border-radius: var(--radius-md);
+}
+
+.profile__facts {
+    display: grid;
+    gap: var(--space-3);
+}
+
+.profile__facts > div {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.profile__facts dt::after {
+    content: " :";
+}
+
+.profile__facts dd {
+    margin: 0;
+}
+
+.profile__badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+}
+
+.profile__logout {
+    justify-self: stretch;
+}
