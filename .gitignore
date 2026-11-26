@@ -6,3 +6,7 @@ config.local.php
 # Fichiers système macOS & éditeur
 .DS_Store
 .vscode/
+# Logs et fichiers d'IDE / système
+*.log
+.idea/
+Thumbs.db

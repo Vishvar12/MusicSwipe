@@ -1,0 +1,303 @@
+/* ==========================================================================
+   MusicSwipe — Composants (DESIGN.md §3)
+   Uniquement des variables de tokens.css.
+   ========================================================================== */
+
+/* Button -------------------------------------------------------------------- */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    min-height: 48px;
+    padding: 0 var(--space-5);
+    border: 1px solid transparent;
+    border-radius: var(--radius-sm);
+    font-size: var(--fs-md);
+    font-weight: var(--fw-semibold);
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color var(--transition), border-color var(--transition), transform var(--transition);
+}
+
+.btn:active {
+    transform: scale(0.98);
+}
+
+.btn--primary {
+    background: var(--primary);
+    color: var(--primary-text);
+}
+
+.btn--primary:hover {
+    background: var(--accent);
+}
+
+.btn--secondary {
+    background: transparent;
+    color: var(--text-primary);
+    border-color: var(--border);
+}
+
+.btn--secondary:hover {
+    border-color: var(--accent);
+}
+
+.btn--ghost {
+    background: transparent;
+    color: var(--text-secondary);
+}
+
+.btn--ghost:hover {
+    color: var(--text-primary);
+}
+
+.btn--danger {
+    background: var(--danger);
+    color: var(--primary-text);
+}
+
+.btn--block {
+    width: 100%;
+}
+
+.btn--sm {
+    min-height: var(--touch-target);
+    padding: 0 var(--space-4);
+    font-size: var(--fs-sm);
+}
+
+.btn:disabled,
+.btn[aria-disabled="true"] {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* Badge --------------------------------------------------------------------- */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px var(--space-3);
+    border-radius: var(--radius-full);
+    background: var(--accent);
+    color: var(--primary-text);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+}
+
+/* Logo ---------------------------------------------------------------------- */
+.logo {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--text-primary);
+    font-size: var(--fs-lg);
+    font-weight: var(--fw-semibold);
+    text-decoration: none;
+}
+
+.logo__mark {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-sm);
+    background: var(--primary);
+    color: var(--primary-text);
+}
+
+/* SwipeButton (rond 64 px) -------------------------------------------------- */
+.swipe-btn {
+    display: grid;
+    place-items: center;
+    width: 64px;
+    height: 64px;
+    flex-shrink: 0;
+    border-radius: var(--radius-full);
+    border: 2px solid transparent;
+    box-shadow: var(--shadow-card);
+}
+
+.swipe-btn--like {
+    background: var(--primary);
+    color: var(--primary-text);
+}
+
+.swipe-btn--dislike {
+    background: var(--bg-surface);
+    border-color: var(--danger);
+    color: var(--danger);
+}
+
+/* Header desktop (≥ 1024 px) ------------------------------------------------ */
+.site-header {
+    display: none;
+}
+
+@media (min-width: 1024px) {
+    .site-header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--space-5);
+        height: var(--header-height);
+        padding: 0 var(--space-7);
+        background: var(--bg-surface);
+        border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .site-header__nav {
+        display: flex;
+        gap: var(--space-6);
+    }
+}
+
+.nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: var(--touch-target);
+    color: var(--text-secondary);
+    text-decoration: none;
+    border-bottom: 3px solid transparent;
+}
+
+.nav-link:hover {
+    color: var(--text-primary);
+}
+
+.nav-link.is-active {
+    color: var(--primary);
+    font-weight: var(--fw-semibold);
+    border-bottom-color: var(--primary);
+}
+
+/* TabBar mobile (< 1024 px) ------------------------------------------------- */
+.tabbar {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 10;
+    display: flex;
+    height: var(--tabbar-height);
+    background: var(--bg-surface);
+    border-top: 1px solid var(--border-subtle);
+}
+
+.tabbar__item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-1);
+    border-top: 3px solid transparent;
+    color: var(--text-secondary);
+    font-size: var(--fs-sm);
+    text-decoration: none;
+}
+
+.tabbar__item.is-active {
+    color: var(--primary);
+    font-weight: var(--fw-semibold);
+    border-top-color: var(--primary);
+}
+
+@media (min-width: 1024px) {
+    .tabbar {
+        display: none;
+    }
+}
+
+/* Accueil ------------------------------------------------------------------- */
+.home {
+    display: grid;
+    gap: var(--space-5);
+}
+
+.home__hero {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-4);
+    padding: var(--space-5);
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+}
+
+.home__cover {
+    display: grid;
+    place-items: center;
+    width: 120px;
+    height: 120px;
+    border-radius: var(--radius-md);
+    background: var(--primary-soft);
+    color: var(--accent);
+}
+
+.home__intro {
+    display: grid;
+    gap: var(--space-4);
+}
+
+.home__benefits {
+    display: grid;
+    gap: var(--space-3);
+    padding: 0;
+    list-style: none;
+}
+
+.home__benefit {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+.home__benefit-icon {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    border-radius: var(--radius-full);
+    background: var(--bg-surface);
+    color: var(--primary);
+}
+
+.home__actions {
+    display: grid;
+    gap: var(--space-3);
+}
+
+@media (min-width: 1024px) {
+    .home {
+        grid-template-columns: 1fr 1fr;
+        grid-template-areas:
+            "logo   logo"
+            "intro  hero"
+            "actions hero";
+        align-items: center;
+        column-gap: var(--space-7);
+        min-height: calc(100vh - 2 * var(--space-7));
+    }
+
+    .home__logo { grid-area: logo; }
+    .home__intro { grid-area: intro; }
+    .home__hero { grid-area: hero; padding: var(--space-7); }
+    .home__actions {
+        grid-area: actions;
+        grid-template-columns: auto auto;
+        justify-content: start;
+        align-self: start;
+    }
+
+    .home__cover {
+        width: 220px;
+        height: 220px;
+    }
+}

@@ -1,9 +1,11 @@
 <?php
-// Charge la configuration locale
+// Charge la configuration locale (identifiants BDD, jamais versionnés)
 $configPath = __DIR__ . '/../config.local.php';
 
 if (!file_exists($configPath)) {
-    die('Erreur : le fichier config.local.php est manquant. Dupliquez config.example.php.');
+    error_log('MusicSwipe : config.local.php manquant (dupliquer config.example.php).');
+    http_response_code(500);
+    exit('Le service est temporairement indisponible. Merci de réessayer plus tard.');
 }
 
 require_once $configPath;
@@ -17,11 +19,13 @@ try {
     );
 
     $pdo = new PDO($dsn, DB_USER, DB_PASS, [
-        PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION, // Affiche les erreurs SQL en dev
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,       // Retourne des tableaux associatifs
+        PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION, // Exceptions sur erreur SQL
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,       // Tableaux associatifs
         PDO::ATTR_EMULATE_PREPARES   => false,                  // Vraies requêtes préparées (anti-injection SQL)
     ]);
 } catch (PDOException $e) {
-    // En production, on ne montre jamais le détail de l'erreur à l'utilisateur
-    die('Erreur de connexion à la base de données : ' . $e->getMessage());
+    // Le détail technique va dans les logs PHP, jamais à l'écran
+    error_log('MusicSwipe : connexion BDD impossible — ' . $e->getMessage());
+    http_response_code(500);
+    exit('Le service est temporairement indisponible. Merci de réessayer plus tard.');
 }
