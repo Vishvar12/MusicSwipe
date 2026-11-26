@@ -301,3 +301,125 @@
         height: 220px;
     }
 }
+
+/* Formulaires (Input) ------------------------------------------------------- */
+.form {
+    display: grid;
+    gap: var(--space-4);
+}
+
+.field {
+    display: grid;
+    gap: var(--space-2);
+}
+
+.field__label {
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+}
+
+.field__input {
+    width: 100%;
+    min-height: 48px;
+    padding: var(--space-3) var(--space-4);
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: var(--fs-md); /* 16 px : évite le zoom automatique sur iOS */
+    transition: border-color var(--transition);
+}
+
+.field__input::placeholder {
+    color: var(--text-secondary);
+}
+
+.field__input:focus-visible {
+    outline: none;
+    border: 2px solid var(--accent);
+    padding: calc(var(--space-3) - 1px) calc(var(--space-4) - 1px);
+}
+
+.field.is-invalid .field__input {
+    border: 2px solid var(--danger);
+    padding: calc(var(--space-3) - 1px) calc(var(--space-4) - 1px);
+}
+
+.field__hint {
+    color: var(--text-secondary);
+    font-size: var(--fs-sm);
+}
+
+.field__error {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--danger);
+    font-size: var(--fs-sm);
+}
+
+.field__error .icon {
+    flex-shrink: 0;
+}
+
+/* Alert (Toast intégré au flux) --------------------------------------------- */
+.alert {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-weight: var(--fw-semibold);
+}
+
+.alert .icon {
+    flex-shrink: 0;
+}
+
+.alert--error {
+    border-color: var(--danger);
+}
+
+.alert--error .icon {
+    color: var(--danger);
+}
+
+.alert--success {
+    border-color: var(--success);
+}
+
+.alert--success .icon {
+    color: var(--success);
+}
+
+/* Pages d'authentification -------------------------------------------------- */
+.auth {
+    display: grid;
+    gap: var(--space-5);
+    max-width: 420px;
+    margin: 0 auto;
+}
+
+.auth__intro {
+    display: grid;
+    gap: var(--space-2);
+}
+
+.link-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-2);
+}
+
+.link-row a {
+    font-weight: var(--fw-semibold);
+}
+
+/* Pages provisoires (en attente des tickets T2 à T6) ------------------------ */
+.coming-soon {
+    display: grid;
+    justify-items: start;
+    gap: var(--space-4);
+}

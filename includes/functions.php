@@ -19,6 +19,53 @@ function redirect(string $path): never
 }
 
 /**
+ * Envoie une réponse JSON { ok, data|error } avec le code HTTP donné puis arrête le script.
+ */
+function json_response(array $payload, int $status = 200): never
+{
+    http_response_code($status);
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode($payload, JSON_UNESCAPED_UNICODE);
+    exit;
+}
+
+/**
+ * Champ de formulaire accessible (label, aide, message d'erreur relié par aria-describedby).
+ * $attrs : attributs HTML supplémentaires déjà sûrs (ex. 'required minlength="8"').
+ */
+function form_field(string $name, string $label, string $type, string $value, ?string $error, string $attrs = '', ?string $hint = null): string
+{
+    $id = 'f-' . $name;
+    $describedBy = [];
+    $html = '<div class="field' . ($error !== null ? ' is-invalid' : '') . '">';
+    $html .= '<label class="field__label" for="' . e($id) . '">' . e($label) . '</label>';
+
+    $extra = '';
+    if ($hint !== null) {
+        $describedBy[] = $id . '-hint';
+    }
+    if ($error !== null) {
+        $describedBy[] = $id . '-error';
+        $extra .= ' aria-invalid="true"';
+    }
+    if ($describedBy) {
+        $extra .= ' aria-describedby="' . e(implode(' ', $describedBy)) . '"';
+    }
+
+    $html .= '<input class="field__input" id="' . e($id) . '" name="' . e($name) . '" type="' . e($type) . '"'
+        . ($type === 'password' ? '' : ' value="' . e($value) . '"')
+        . ' ' . $attrs . $extra . '>';
+
+    if ($hint !== null) {
+        $html .= '<p class="field__hint" id="' . e($id) . '-hint">' . e($hint) . '</p>';
+    }
+    if ($error !== null) {
+        $html .= '<p class="field__error" id="' . e($id) . '-error">' . icon('alert', 16) . '<span>' . e($error) . '</span></p>';
+    }
+    return $html . '</div>';
+}
+
+/**
  * Retourne une icône SVG inline (couleur héritée via currentColor).
  * Icônes décoratives : aria-hidden, le texte accessible est porté par l'élément parent.
  */
@@ -33,6 +80,9 @@ function icon(string $name, int $size = 24): string
         'cards'  => '<rect x="6" y="3" width="12" height="18" rx="2"/>',
         'list'   => '<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',
         'logout' => '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>',
+        'alert'  => '<circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/>',
+        'check'  => '<path d="M20 6 9 17l-5-5"/>',
+        'refresh' => '<path d="M3 12a9 9 0 0 1 15-6.7L21 8M21 3v5h-5M21 12a9 9 0 0 1-15 6.7L3 16M3 21v-5h5"/>',
     ];
     $filled = in_array($name, ['heart', 'play'], true);
     $body = $paths[$name] ?? '';

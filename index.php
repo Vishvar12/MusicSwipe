@@ -1,7 +1,13 @@
 <?php
 declare(strict_types=1);
 
-// Page publique. Ticket T1 : rediriger vers swipe.php si une session est déjà active.
+// Page publique : un utilisateur déjà connecté est renvoyé vers son espace.
+require __DIR__ . '/includes/auth.php';
+if (current_user_id() !== null) {
+    require __DIR__ . '/includes/db.php';
+    redirect(user_home($pdo, current_user_id()));
+}
+
 $pageTitle = 'Accueil';
 $activeNav = null;
 require __DIR__ . '/includes/header.php';
