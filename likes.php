@@ -4,20 +4,35 @@ declare(strict_types=1);
 require __DIR__ . '/includes/db.php';
 require __DIR__ . '/includes/auth.php';
 require __DIR__ . '/includes/likes.php';
+require __DIR__ . '/includes/genres.php';
 
 $userId = require_login();
 
-$likes = [];
+$genres = [];
+$filters = ['q' => '', 'genre' => null, 'sort' => 'recent', 'page' => 1];
+$result = ['items' => [], 'total' => 0, 'page' => 1, 'pages' => 1];
+$count = 0;
 $loadError = false;
 try {
-    $likes = get_user_likes($pdo, $userId);
+    $genres = get_all_genres($pdo);
+    // Critères lus dans l'URL ($_GET) et validés par liste blanche (US-06)
+    $filters = read_like_filters($_GET, array_map('intval', array_column($genres, 'id')));
+    $count = count_user_likes($pdo, $userId);
+    $result = search_user_likes($pdo, $userId, $filters);
+    $filters['page'] = $result['page'];
 } catch (PDOException $e) {
     error_log('MusicSwipe likes : ' . $e->getMessage());
     $loadError = true;
 }
 
-$count = count($likes);
+$likes = $result['items'];
+$filtered = like_filters_active($filters);
+// États : error | empty (aucun like) | noresult (filtres sans résultat) | list
+$view = $loadError ? 'error' : ($count === 0 ? 'empty' : ($result['total'] === 0 ? 'noresult' : 'list'));
+
 $countLabel = static fn (int $n): string => $n . ($n > 1 ? ' morceaux' : ' morceau');
+$summary = static fn (array $r): string => $r['total'] . ($r['total'] > 1 ? ' résultats' : ' résultat')
+    . ' · page ' . $r['page'] . ' sur ' . $r['pages'];
 
 $pageTitle = 'Mes likes';
 $activeNav = 'likes';
@@ -42,16 +57,79 @@ require __DIR__ . '/includes/header.php';
             <a class="btn btn--secondary" href="likes.php"><?= icon('refresh', 18) ?><span>Réessayer</span></a>
         </div>
     <?php else: ?>
+        <?php if ($count > 0): ?>
+            <!-- Recherche, filtre et tri : formulaire GET, critères conservés dans l'URL -->
+            <form class="likes-filters" method="get" action="likes.php" role="search" data-likes-filters data-hide-when-empty>
+                <div class="likes-filters__search">
+                    <label class="visually-hidden" for="f-q">Rechercher un titre ou un artiste</label>
+                    <span class="likes-filters__icon"><?= icon('search', 20) ?></span>
+                    <input class="field__input" id="f-q" type="search" name="q" value="<?= e($filters['q']) ?>"
+                           maxlength="<?= SEARCH_MAX_LENGTH ?>" placeholder="Rechercher un titre, un artiste">
+                </div>
+                <div class="likes-filters__row">
+                    <label class="visually-hidden" for="f-genre">Genre</label>
+                    <select class="field__input" id="f-genre" name="genre" data-autosubmit>
+                        <option value="">Genre : tous</option>
+                        <?php foreach ($genres as $genre): ?>
+                            <option value="<?= (int) $genre['id'] ?>" <?= $filters['genre'] === (int) $genre['id'] ? 'selected' : '' ?>>
+                                <?= e($genre['name']) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                    <label class="visually-hidden" for="f-sort">Trier par</label>
+                    <select class="field__input" id="f-sort" name="sort" data-autosubmit>
+                        <?php foreach (LIKE_SORTS as $key => $sort): ?>
+                            <option value="<?= e($key) ?>" <?= $filters['sort'] === $key ? 'selected' : '' ?>><?= e($sort['label']) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                    <button class="btn btn--primary" type="submit">Rechercher</button>
+                </div>
+                <?php if ($filtered): ?>
+                    <a class="likes-filters__reset text-small" href="likes.php">Réinitialiser les filtres</a>
+                <?php endif; ?>
+            </form>
+        <?php endif; ?>
+
+        <?php if ($view === 'list'): ?>
+            <p class="text-small text-secondary" data-likes-summary data-hide-when-empty
+               data-total="<?= $result['total'] ?>" data-page="<?= $result['page'] ?>" data-pages="<?= $result['pages'] ?>">
+                <?= e($summary($result)) ?>
+            </p>
+        <?php endif; ?>
+
+        <!-- État : aucun résultat (des likes existent, mais aucun ne correspond) -->
+        <?php if ($view === 'noresult'): ?>
+            <div class="state-block" role="status">
+                <span class="state-block__icon"><?= icon('search', 32) ?></span>
+                <h2 class="subtitle">Aucun morceau ne correspond à ta recherche</h2>
+                <p class="text-secondary">Essaie un autre mot-clé ou un autre genre.</p>
+                <a class="btn btn--secondary" href="likes.php">Réinitialiser les filtres</a>
+            </div>
+        <?php endif; ?>
+
         <!-- État : vide (affiché aussi par likes.js quand le dernier morceau est retiré) -->
-        <div class="state-block" data-likes-empty <?= $count > 0 ? 'hidden' : '' ?>>
+        <div class="state-block" data-likes-empty <?= $view === 'empty' ? '' : 'hidden' ?>>
             <span class="state-block__icon"><?= icon('music', 32) ?></span>
             <h2 class="subtitle">Aucun morceau liké pour l'instant</h2>
             <p class="text-secondary">Swipe à droite sur un morceau pour le retrouver ici.</p>
             <a class="btn btn--primary" href="swipe.php">Commencer à swiper</a>
         </div>
 
+        <!-- État : chargement (affiché par likes.js pendant une nouvelle recherche ou un changement de page) -->
+        <ul class="likes__list" data-likes-skeleton aria-hidden="true" hidden>
+            <?php for ($i = 0; $i < 3; $i++): ?>
+                <li class="track-row track-row--skeleton">
+                    <span class="skeleton skeleton--thumb"></span>
+                    <span class="track-row__skeleton-lines">
+                        <span class="skeleton skeleton--line"></span>
+                        <span class="skeleton skeleton--line-short"></span>
+                    </span>
+                </li>
+            <?php endfor; ?>
+        </ul>
+
         <!-- État : rempli -->
-        <ul class="likes__list" data-likes-list <?= $count === 0 ? 'hidden' : '' ?>>
+        <ul class="likes__list" data-likes-list <?= $view === 'list' ? '' : 'hidden' ?>>
             <?php foreach ($likes as $like):
                 $id = (int) $like['id'];
                 $note = $like['personal_note'];
@@ -104,6 +182,35 @@ require __DIR__ . '/includes/header.php';
                 </li>
             <?php endforeach; ?>
         </ul>
+
+        <?php if ($view === 'list' && $result['pages'] > 1): ?>
+            <nav class="pagination" aria-label="Pagination de Mes likes" data-likes-pagination data-hide-when-empty>
+                <?php if ($result['page'] > 1): ?>
+                    <a class="pagination__link" href="<?= e(likes_url($filters, ['page' => $result['page'] - 1])) ?>" aria-label="Page précédente">
+                        <?= icon('chevronLeft', 20) ?>
+                    </a>
+                <?php else: ?>
+                    <span class="pagination__link is-disabled" aria-hidden="true"><?= icon('chevronLeft', 20) ?></span>
+                <?php endif; ?>
+
+                <?php for ($p = 1; $p <= $result['pages']; $p++): ?>
+                    <?php if ($p === $result['page']): ?>
+                        <a class="pagination__link is-current" href="<?= e(likes_url($filters, ['page' => $p])) ?>" aria-current="page"
+                           aria-label="Page <?= $p ?>, page actuelle"><?= $p ?></a>
+                    <?php else: ?>
+                        <a class="pagination__link" href="<?= e(likes_url($filters, ['page' => $p])) ?>" aria-label="Page <?= $p ?>"><?= $p ?></a>
+                    <?php endif; ?>
+                <?php endfor; ?>
+
+                <?php if ($result['page'] < $result['pages']): ?>
+                    <a class="pagination__link" href="<?= e(likes_url($filters, ['page' => $result['page'] + 1])) ?>" aria-label="Page suivante">
+                        <?= icon('chevronRight', 20) ?>
+                    </a>
+                <?php else: ?>
+                    <span class="pagination__link is-disabled" aria-hidden="true"><?= icon('chevronRight', 20) ?></span>
+                <?php endif; ?>
+            </nav>
+        <?php endif; ?>
     <?php endif; ?>
 
     <!-- Modale de confirmation de suppression -->
