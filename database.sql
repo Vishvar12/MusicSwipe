@@ -70,7 +70,8 @@ CREATE TABLE `playlists` (
 CREATE TABLE `playlist_tracks` (
   `playlist_id` int UNSIGNED NOT NULL,
   `track_id` int UNSIGNED NOT NULL,
-  `added_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+  `added_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `personal_note` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------

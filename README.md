@@ -40,6 +40,8 @@ MusicSwipe est une application web interactive de découverte musicale inspirée
 
 2. **Créer la base de données :** ouvrir phpMyAdmin, créer une base `musicswipe` (interclassement `utf8mb4_general_ci`), puis onglet **Importer** → sélectionner `database.sql` → **Exécuter**.
 
+   **Base déjà créée avant une mise à jour ?** Exécuter dans l'onglet **SQL** de phpMyAdmin, dans l'ordre, les fichiers du dossier [`migrations/`](migrations/) qui n'ont pas encore été appliqués (ex. `001_playlist_tracks_personal_note.sql`, ajouté au ticket T4). Une base importée depuis le `database.sql` à jour n'en a pas besoin.
+
 3. **Configurer la connexion :** dupliquer le modèle puis renseigner vos identifiants locaux.
    ```bash
    cp config.example.php config.local.php
