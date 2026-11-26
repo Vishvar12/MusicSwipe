@@ -51,31 +51,11 @@ require __DIR__ . '/includes/header.php';
     <?php else: ?>
         <form class="form" method="post" action="onboarding.php" data-loading-text="Enregistrement…" data-genre-form>
             <?= csrf_field() ?>
-            <fieldset class="genre-picker" aria-describedby="genres-count genres-error">
-                <legend class="visually-hidden">Genres musicaux</legend>
-                <div class="genre-picker__list">
-                    <?php foreach ($genres as $genre): ?>
-                        <label class="genre-pill">
-                            <input class="genre-pill__input" type="checkbox" name="genres[]"
-                                   value="<?= (int) $genre['id'] ?>"
-                                   <?= in_array((int) $genre['id'], $selected, true) ? 'checked' : '' ?>>
-                            <span class="genre-pill__label">
-                                <?= icon('check', 16) ?>
-                                <span><?= e($genre['name']) ?></span>
-                            </span>
-                        </label>
-                    <?php endforeach; ?>
-                </div>
-            </fieldset>
-
-            <p class="field__error" id="genres-error" role="alert" <?= $error === null ? 'hidden' : '' ?>>
-                <?= icon('alert', 16) ?>
-                <span data-genre-error-text><?= e($error ?? 'Choisis au moins un genre pour continuer.') ?></span>
-            </p>
-
-            <p class="genre-counter<?= $selected === [] ? '' : ' is-active' ?>" id="genres-count" aria-live="polite">
-                <?= e(genre_count_label(count($selected))) ?>
-            </p>
+            <?php
+            $genreError = $error;
+            $genreLegend = 'Genres musicaux';
+            require __DIR__ . '/includes/genre_picker.php';
+            ?>
 
             <button class="btn btn--primary btn--block" type="submit">Continuer</button>
         </form>

@@ -89,6 +89,7 @@ Yanis, 24 ans, jeune actif, utilise surtout la version desktop le soir pour fair
 - Un morceau n'est proposé qu'une fois par utilisateur (contrainte unique sur `swipes`).
 - Retirer un morceau de « Mes likes » supprime la ligne de `playlist_tracks` mais **garde l'historique** dans `swipes` (le morceau n'est pas reproposé, les statistiques de swipe restent justes).
 - Les compteurs du dashboard : *swipes* = `COUNT(swipes)`, *likes* = `COUNT(playlist_tracks)` de sa playlist, *dislikes* = `COUNT(swipes WHERE action='dislike')`.
+- *Taux de like* = swipes `like` ÷ swipes (calculé sur l'historique : retirer un morceau de « Mes likes » ne change pas le taux) ; « — » s'il n'y a encore aucun swipe. *Genre le plus liké* = genre le plus présent dans « Mes likes », égalité départagée par ordre alphabétique.
 - Un utilisateur sans genre préféré est redirigé vers `onboarding.php` après connexion.
 
 ## 7. Arborescence des écrans
