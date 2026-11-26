@@ -1,0 +1,8 @@
+# Fichiers de configuration locale (secrets)
+config.local.php
+.env
+.env.local
+
+# Fichiers système macOS & éditeur
+.DS_Store
+.vscode/
