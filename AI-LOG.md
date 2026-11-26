@@ -71,3 +71,12 @@
 - **Vérification (curl + navigateur + BDD) :** inscription → 302 onboarding, hash `$2y$`, playlist créée ; email existant refusé sans doublon ; champs invalides refusés côté serveur (validation HTML contournée) ; POST sans CSRF → 403 ; mauvais mot de passe → message générique ; 4 pages privées → 302 `login.php` sans session ; `Cache-Control: no-store` ; comptes A et B en parallèle avec sessions distinctes ; déconnexion de A sans effet sur B ; « Précédent » après déconnexion → `login.php` ; pseudo `<script>` affiché échappé ; `php -l` OK ; console sans erreur ; rendu 390 / 1440 px conforme aux maquettes `02-*`. Comptes de test supprimés ensuite.
 - **Écarts au plan :** ajout de `assets/js/forms.js` (état de chargement exigé par `DESIGN.md` §4) et d'un bouton de déconnexion sur `profil.php` (seul accès à la déconnexion sur mobile).
 - **Décision :** à relire (`git diff`) puis committer.
+
+## 2026-11-26 — Ticket T2 — Onboarding des genres (US-03)
+- **Outil :** Claude Code (plan T2 validé, puis exécution)
+- **Branche :** `feature/onboarding-genres`
+- **Prompt / Objectif :** Choix d'au moins un genre préféré, enregistré dans `user_genres`, avec double validation.
+- **Résultat :** `includes/genres.php` (`get_all_genres`, `get_user_genre_ids`, `filter_valid_genre_ids`, `save_user_genres` en transaction — réutilisables en T6) ; `onboarding.php` (pastilles = vraies cases à cocher dans un `fieldset`, pré-cochage, état vide si aucun genre en base) ; `assets/js/onboarding.js` (compteur `aria-live`, blocage de l'envoi sans genre) ; styles GenrePill ; garde-fou dans `swipe.php` (sans genre → onboarding).
+- **Vérification :** envoi vide → message serveur, 0 ligne ; `genres[]=999&genres[]=abc` seuls → refusé ; 999 et doublon ignorés dans un envoi valide → 3 lignes exactes ; pré-cochage ; remplacement sans doublon ; sans CSRF → 403 ; sans session → `login.php` ; redirections après connexion (sans genre → onboarding, avec → swipe) ; 2 comptes : `user_id=1` injecté par B ignoré, genres de A intacts ; navigateur : validation JS, clavier (Tab + Espace) avec focus visible, rendu 390 / 1440 px, console sans erreur. Comptes de test supprimés.
+- **Bug trouvé et corrigé :** `.field__error { display: flex }` écrasait l'attribut `hidden` (message d'erreur toujours visible) → règle globale `[hidden] { display: none !important; }` dans `base.css`. Le navigateur gardait l'ancienne feuille en cache → ajout de `asset()` (URL versionnée `?v=date`) pour les CSS et JS.
+- **Décision :** à relire (`git diff`) puis committer.
