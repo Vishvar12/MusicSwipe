@@ -1,0 +1,67 @@
+/* ==========================================================================
+   MusicSwipe — Design tokens (source unique : DESIGN.md §2)
+   Seul fichier du projet autorisé à contenir des valeurs de couleur brutes.
+   ========================================================================== */
+:root {
+    /* Couleurs */
+    --bg-main: #161522;
+    --bg-surface: #413f5b;
+    --text-primary: #f0dcc5;
+    --text-secondary: #c2c3dc;
+    --primary: #e9a4b7;
+    --primary-text: #161522;
+    --accent: #fbd5da;
+    --border: #a3a1bf;
+    --danger: #fca5a5;
+    --success: #86efac;
+    --warning: #fcd34d;
+
+    /* Couleurs translucides */
+    --overlay: rgba(22, 21, 34, 0.8);
+    --primary-soft: rgba(233, 164, 183, 0.3);
+    --skeleton: rgba(194, 195, 220, 0.18);
+    --border-subtle: rgba(163, 161, 191, 0.4);
+    --veil: rgba(22, 21, 34, 0.75);
+
+    /* Typographie */
+    --font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --fs-sm: 14px;
+    --fs-md: 16px;
+    --fs-lg: 20px;
+    --fs-xl: 24px;
+    --fs-2xl: 32px;
+    --fw-regular: 400;
+    --fw-semibold: 600;
+    --fw-bold: 700;
+    --lh: 1.5;
+    --lh-tight: 1.25;
+
+    /* Espacements */
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 24px;
+    --space-6: 32px;
+    --space-7: 48px;
+
+    /* Rayons */
+    --radius-sm: 8px;
+    --radius-md: 16px;
+    --radius-full: 9999px;
+
+    /* Ombres */
+    --shadow-card: 0 8px 24px rgba(0, 0, 0, 0.35);
+    --shadow-modal: 0 16px 48px rgba(0, 0, 0, 0.5);
+
+    /* Focus et mouvement */
+    --focus-ring: 2px solid var(--accent);
+    --focus-offset: 2px;
+    --transition: 200ms ease;
+
+    /* Mise en page */
+    --container-max: 1100px;
+    --tabbar-height: 72px;
+    --header-height: 72px;
+    --touch-target: 44px;
+}

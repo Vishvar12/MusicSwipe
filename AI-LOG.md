@@ -52,4 +52,13 @@
 - **Résultat :** page « 00 · Design System » (variables liées aux tokens, styles de texte, ombres, 18 icônes, 18 composants avec variantes) ; page « 01 · Mobile » avec 25 écrans couvrant les états rempli / chargement / vide / erreur / aucun résultat / succès ; 25 PNG + 2 vues d'ensemble dans `docs/screens/`.
 - **Vérification :** captures relues écran par écran ; contrastes conformes à `DESIGN.md`.
 - **Problèmes :** l'opacité appliquée sur une peinture liée à une variable ne s'affichait pas → ajout de 4 tokens translucides (`--primary-soft`, `--skeleton`, `--border-subtle`, `--veil`) documentés dans `DESIGN.md`. Quota d'appels MCP du plan Figma Starter atteint → écrans desktop non réalisés et PNG découpés depuis une capture d'ensemble (basse résolution).
-- **Décision :** accepté pour le mobile ; desktop et exports haute résolution à faire (à la main ou quand le quota sera réinitialisé).
+- **Décision :** accepté pour le mobile ; desktop et exports haute résolution à faire (à la main ou quand le quota sera réinitialisé). Une tâche planifiée vérifie le quota chaque lundi à 9 h.
+
+## 2026-11-26 — Ticket T0 — Structure, design tokens et layout de base
+- **Outil :** Claude Code (plan T0 validé, puis exécution)
+- **Branche :** `chore/setup` (après `git init` et un commit `docs:` sur `main`)
+- **Prompt / Objectif :** Poser la structure du projet sans logique métier : tokens CSS, base, composants, gabarits PHP communs, page d'accueil statique, correction de `db.php`.
+- **Résultat :** `assets/css/tokens.css`, `base.css`, `components.css` ; `includes/functions.php` (`e()`, `redirect()`, `icon()` en SVG `currentColor`), `header.php`, `footer.php`, `nav.php` (barre d'onglets mobile + en-tête desktop, onglet actif via `aria-current`) ; `index.php` conforme à `01-accueil-mobile` ; `db.php` n'affiche plus l'erreur technique (log + HTTP 500) ; `.gitignore` complété.
+- **Vérification :** `php -l` OK sur les 6 fichiers PHP ; aucune couleur en dur hors `tokens.css` (grep) ; rendu vérifié à 390×844 et 1440×900 dans le navigateur ; console sans erreur ; `config.local.php` absent de `git status`.
+- **Limites :** les liens « Créer un compte » / « J'ai déjà un compte » pointent vers `register.php` / `login.php` créés en T1 ; `nav.php` n'est pas encore affiché (aucune page privée avant T1) ; le bouton de déconnexion recevra son jeton CSRF en T1.
+- **Décision :** à relire (`git diff`) puis committer.
