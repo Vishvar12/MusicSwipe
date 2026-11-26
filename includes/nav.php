@@ -25,8 +25,8 @@ $navItems = [
             </a>
         <?php endforeach; ?>
     </nav>
-    <?php /* Ticket T1 : formulaire POST vers logout.php avec jeton CSRF. */ ?>
     <form class="site-header__logout" action="logout.php" method="post">
+        <?= csrf_field() ?>
         <button class="btn btn--secondary btn--sm" type="submit">
             <?= icon('logout', 18) ?>
             <span>Se déconnecter</span>

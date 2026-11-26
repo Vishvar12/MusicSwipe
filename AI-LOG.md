@@ -62,3 +62,12 @@
 - **Vérification :** `php -l` OK sur les 6 fichiers PHP ; aucune couleur en dur hors `tokens.css` (grep) ; rendu vérifié à 390×844 et 1440×900 dans le navigateur ; console sans erreur ; `config.local.php` absent de `git status`.
 - **Limites :** les liens « Créer un compte » / « J'ai déjà un compte » pointent vers `register.php` / `login.php` créés en T1 ; `nav.php` n'est pas encore affiché (aucune page privée avant T1) ; le bouton de déconnexion recevra son jeton CSRF en T1.
 - **Décision :** à relire (`git diff`) puis committer.
+
+## 2026-11-26 — Ticket T1 — Authentification (US-01, US-02)
+- **Outil :** Claude Code (plan T1 validé, puis exécution)
+- **Branche :** `feature/auth`
+- **Prompt / Objectif :** Inscription, connexion, déconnexion, protection des pages privées, CSRF, sessions sécurisées.
+- **Résultat :** `includes/auth.php` (cookie `HttpOnly`/`SameSite=Lax`, `require_login()`, `require_guest()`, `login_user()` avec `session_regenerate_id`, `logout_user()`, en-têtes no-cache), `includes/csrf.php`, `register.php` (transaction compte + playlist « Mes likes »), `login.php` (message générique, rehash), `logout.php` (POST + CSRF), pages provisoires protégées `onboarding/swipe/likes/profil.php`, `assets/js/forms.js` (état chargement des boutons), styles Input / Alert / Auth ; `form_field()` et `json_response()` ajoutés à `functions.php`.
+- **Vérification (curl + navigateur + BDD) :** inscription → 302 onboarding, hash `$2y$`, playlist créée ; email existant refusé sans doublon ; champs invalides refusés côté serveur (validation HTML contournée) ; POST sans CSRF → 403 ; mauvais mot de passe → message générique ; 4 pages privées → 302 `login.php` sans session ; `Cache-Control: no-store` ; comptes A et B en parallèle avec sessions distinctes ; déconnexion de A sans effet sur B ; « Précédent » après déconnexion → `login.php` ; pseudo `<script>` affiché échappé ; `php -l` OK ; console sans erreur ; rendu 390 / 1440 px conforme aux maquettes `02-*`. Comptes de test supprimés ensuite.
+- **Écarts au plan :** ajout de `assets/js/forms.js` (état de chargement exigé par `DESIGN.md` §4) et d'un bouton de déconnexion sur `profil.php` (seul accès à la déconnexion sur mobile).
+- **Décision :** à relire (`git diff`) puis committer.

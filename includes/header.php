@@ -17,6 +17,9 @@ $activeNav = $activeNav ?? null;
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="MusicSwipe — swipe, découvre, crée ta playlist.">
     <title><?= e($pageTitle) ?> · MusicSwipe</title>
+    <?php if (function_exists('csrf_token') && session_status() === PHP_SESSION_ACTIVE): ?>
+        <meta name="csrf-token" content="<?= e(csrf_token()) ?>">
+    <?php endif; ?>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap">
