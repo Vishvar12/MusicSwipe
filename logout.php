@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-require __DIR__ . '/includes/auth.php';
+require_once __DIR__ . '/includes/auth.php';
 
 // Déconnexion uniquement en POST avec jeton CSRF (un simple lien ne doit pas pouvoir déconnecter)
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {

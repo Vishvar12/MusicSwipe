@@ -2,10 +2,9 @@
 declare(strict_types=1);
 
 // Page publique : un utilisateur déjà connecté est renvoyé vers son espace.
-require __DIR__ . '/includes/auth.php';
+require_once __DIR__ . '/includes/auth.php';
 if (current_user_id() !== null) {
-    require __DIR__ . '/includes/db.php';
-    redirect(user_home($pdo, current_user_id()));
+    redirect(user_home($pdo, current_user_id())); // $pdo est fourni par auth.php
 }
 
 $pageTitle = 'Accueil';

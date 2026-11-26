@@ -6,8 +6,8 @@ declare(strict_types=1);
  * Réponse : { ok: true, data: { action, already, remaining } }
  * L'utilisateur vient UNIQUEMENT de la session : tout user_id envoyé par le client est ignoré.
  */
-require __DIR__ . '/../includes/db.php';
-require __DIR__ . '/../includes/auth.php';
+require_once __DIR__ . '/../includes/db.php';
+require_once __DIR__ . '/../includes/auth.php';
 require __DIR__ . '/../includes/tracks.php';
 
 $userId = require_login();

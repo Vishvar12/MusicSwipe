@@ -80,14 +80,18 @@ database.sql    schéma + données de test
 7 tables reliées par clés étrangères : `users`, `genres`, `user_genres`, `tracks`, `swipes`, `playlists`, `playlist_tracks`. Détail des colonnes et règles métier dans [`PROJECT.md`](PROJECT.md#6-entités-métier-et-relations-mysql).
 
 ## Sécurité
-- Mots de passe hachés (`password_hash` / `password_verify`)
+- Mots de passe hachés (`password_hash` / `password_verify`), limite de 5 tentatives de connexion puis blocage 5 minutes
 - Requêtes préparées PDO uniquement (anti-injection SQL)
-- Échappement des sorties `htmlspecialchars` (anti-XSS) et jeton CSRF sur tous les POST
-- Chaque lecture / modification / suppression filtrée par `$_SESSION['user_id']` côté serveur
-- Aucun secret versionné (`config.local.php` dans `.gitignore`)
+- Échappement des sorties `htmlspecialchars` (anti-XSS), en-têtes HTTP de sécurité (CSP, anti-clickjacking) et jeton CSRF sur tous les POST
+- Chaque lecture / modification / suppression filtrée par `$_SESSION['user_id']` côté serveur (équivalent de la RLS)
+- Fichiers internes (`includes/`, `migrations/`, `*.sql`, `*.md`, `config*.php`) inaccessibles par URL (`.htaccess`)
+- Aucun secret versionné (`config.local.php` dans `.gitignore`) ; erreurs PHP masquées en production (`APP_DEBUG`)
+- Audit complet et plan de test à 2 comptes : [`docs/security-audit.md`](docs/security-audit.md)
 
 ## Déploiement
-Vercel n'exécutant pas PHP + MySQL, l'application sera déployée sur un hébergeur gratuit PHP 8 / MySQL (ex. alwaysdata) : import de `database.sql`, création de `config.local.php` sur le serveur, puis test complet en production. _Procédure détaillée ajoutée au ticket T7._
+Vercel n'exécutant pas PHP + MySQL, l'application se déploie sur un hébergeur PHP 8 / MySQL (recommandé : alwaysdata, offre gratuite avec HTTPS). Procédure pas à pas et tests en production : [`docs/DEPLOY.md`](docs/DEPLOY.md).
+
+En local, ajouter `define('APP_DEBUG', true);` dans `config.local.php` pour voir les erreurs PHP à l'écran (sinon elles vont uniquement dans les logs).
 
 ## Documentation du projet
 | Fichier | Contenu |
@@ -96,6 +100,8 @@ Vercel n'exécutant pas PHP + MySQL, l'application sera déployée sur un héber
 | [`DESIGN.md`](DESIGN.md) | Tokens CSS, composants, états d'écran, accessibilité, maquettes |
 | [`AGENTS.md`](AGENTS.md) / [`CLAUDE.md`](CLAUDE.md) | Règles techniques, sécurité, workflow Git et agent, tickets |
 | [`AI-LOG.md`](AI-LOG.md) | Journal des décisions prises avec l'IA |
+| [`docs/security-audit.md`](docs/security-audit.md) | Audit de sécurité et plan de test à 2 comptes |
+| [`docs/DEPLOY.md`](docs/DEPLOY.md) | Procédure de déploiement |
 
 ## Contexte
 Projet réalisé dans le cadre du module « NoCode AI / Vibe Coding — De l'idée au MVP avec l'IA », avec Claude Code comme agent de développement.

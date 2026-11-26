@@ -6,8 +6,12 @@ declare(strict_types=1);
  * L'identité de l'utilisateur vient UNIQUEMENT de $_SESSION['user_id'] (jamais du client).
  */
 require_once __DIR__ . '/functions.php';
+require_once __DIR__ . '/security.php';   // en-têtes HTTP de sécurité, avant toute sortie
+require_once __DIR__ . '/db.php';         // $pdo : nécessaire pour vérifier que le compte existe encore
 
 if (session_status() === PHP_SESSION_NONE) {
+    ini_set('session.use_strict_mode', '1');     // refuse un identifiant de session inventé par le client
+    ini_set('session.use_only_cookies', '1');    // jamais d'identifiant de session dans l'URL
     session_name('MUSICSWIPESESSID');
     session_set_cookie_params([
         'lifetime' => 0,
@@ -54,6 +58,14 @@ function send_no_cache_headers(): void
 function require_login(): int
 {
     $userId = current_user_id();
+
+    // Session « orpheline » : le compte a été supprimé en base depuis la connexion
+    if ($userId !== null && !user_exists($GLOBALS['pdo'], $userId)) {
+        logout_user();
+        session_start(); // nouvelle session vide (jeton CSRF propre pour la page de connexion)
+        $userId = null;
+    }
+
     if ($userId === null) {
         if (is_api_request()) {
             json_response(['ok' => false, 'error' => 'Tu dois être connecté.'], 401);
@@ -62,6 +74,16 @@ function require_login(): int
     }
     send_no_cache_headers();
     return $userId;
+}
+
+/**
+ * Vrai si le compte existe toujours en base.
+ */
+function user_exists(PDO $pdo, int $userId): bool
+{
+    $stmt = $pdo->prepare('SELECT 1 FROM users WHERE id = :uid');
+    $stmt->execute(['uid' => $userId]);
+    return (bool) $stmt->fetchColumn();
 }
 
 /**
@@ -80,6 +102,11 @@ function user_home(PDO $pdo, int $userId): string
 function require_guest(PDO $pdo): void
 {
     $userId = current_user_id();
+    if ($userId !== null && !user_exists($pdo, $userId)) {
+        logout_user();   // session orpheline : on reste sur la page de connexion
+        session_start();
+        return;
+    }
     if ($userId !== null) {
         redirect(user_home($pdo, $userId));
     }

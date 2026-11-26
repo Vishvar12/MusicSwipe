@@ -10,6 +10,14 @@ if (!file_exists($configPath)) {
 
 require_once $configPath;
 
+// Affichage des erreurs : seulement si APP_DEBUG vaut true (développement local).
+// Sans la constante, on choisit l'option sûre : rien à l'écran, tout dans les logs.
+if (!defined('APP_DEBUG')) {
+    define('APP_DEBUG', false);
+}
+ini_set('display_errors', APP_DEBUG ? '1' : '0');
+ini_set('log_errors', '1');
+
 try {
     $dsn = sprintf(
         'mysql:host=%s;port=%s;dbname=%s;charset=utf8mb4',

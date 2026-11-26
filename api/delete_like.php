@@ -6,8 +6,8 @@ declare(strict_types=1);
  * Réponse : { ok: true, data: { track_id, count } } — count = morceaux restants dans la playlist
  * L'utilisateur vient UNIQUEMENT de la session.
  */
-require __DIR__ . '/../includes/db.php';
-require __DIR__ . '/../includes/auth.php';
+require_once __DIR__ . '/../includes/db.php';
+require_once __DIR__ . '/../includes/auth.php';
 require __DIR__ . '/../includes/likes.php';
 
 $userId = require_login();
